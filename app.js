@@ -4,8 +4,8 @@ const axios = require('axios')
 const invokeFetchSubreddit = context => {
   const { subreddit } = context
   return axios
-    .get(`https://www.reddit/r/${subreddit}.json`)
-    .then(json => json.data.children.map(child => child.data))
+    .get(`https://www.reddit.com/r/${subreddit}.json`)
+    .then(response => response.data.data.children.map(child => child.data))
 }
 
 const redditMachine = Machine({
@@ -23,13 +23,13 @@ const redditMachine = Machine({
         loading: {
           invoke: {
             id: 'fetch-subreddit',
-            src: invokeFetchSubreddit
-          },
-          onDone: {
-            target: 'loaded',
-            actions: assign({ posts: (context, event) => event.data })
-          },
-          onError: 'failed'
+            src: invokeFetchSubreddit,
+            onDone: {
+              target: 'loaded',
+              actions: assign({ posts: (context, event) => event.data })
+            },
+            onError: 'failed'
+          }
         },
         loaded: {},
         failed: {}
@@ -37,10 +37,12 @@ const redditMachine = Machine({
     }
   },
   on: {
-    SELECT: '.selected',
-    actions: assign({
-      subreddit: (context, event) => event.name
-    })
+    SELECT: {
+      target: '.selected',
+      actions: assign({
+        subreddit: (context, event) => event.name
+      })
+    }
   }
 })
 
