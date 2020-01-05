@@ -1,5 +1,5 @@
-const { interpret } = require('xstate')
-const { redditMachine } = require('../app')
+import { interpret } from 'xstate'
+import { redditMachine } from '../redditMachine'
 
 describe('reddit machine (live)', () => {
   it('should load posts of a selected subreddit', done => {
