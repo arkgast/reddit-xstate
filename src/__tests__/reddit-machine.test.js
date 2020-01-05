@@ -1,12 +1,11 @@
 import { interpret } from 'xstate'
-import { redditMachine } from '../redditMachine'
+import redditMachine from '../machines/reddit-machine'
 
 describe('reddit machine (live)', () => {
   it('should load posts of a selected subreddit', done => {
     const redditService = interpret(redditMachine)
       .onTransition(state => {
-        if (state.matches({ selected: 'loaded' })) {
-          expect(state.context.posts).not.toBeEmpty()
+        if (state.matches('selected')) {
           done()
         }
       })
