@@ -1,15 +1,13 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useMachine } from '@xstate/react'
-import createSubredditMachine from './machines/sub-reddit-machine'
+import { useService } from '@xstate/react'
 
-const Subreddit = ({ name }) => {
-  const subredditMachine = useMemo(() => {
-    console.log({ name })
-    return createSubredditMachine(name)
-  }, [name])
+const dateTimeFormat = new Intl.DateTimeFormat('en-US', {
+  timeStyle: 'long'
+})
 
-  const [current, send] = useMachine(subredditMachine)
+const Subreddit = ({ service }) => {
+  const [current, send] = useService(service)
 
   if (current.matches('failure')) {
     return (
@@ -23,14 +21,17 @@ const Subreddit = ({ name }) => {
   const { subreddit, posts, lastUpdated } = current.context
 
   return (
-    <section data-machine={subredditMachine.id} data-state={current.toString()}>
+    <section
+      data-machine={service.machine.id}
+      data-state={current.toStrings().join(' ')}
+    >
       {current.matches('loading') && <div>Loading...</div>}
       {posts && (
         <>
           <header>
             <h2>{subreddit}</h2>
             <small>
-              Last updated: {lastUpdated}{' '}
+              Last updated: {dateTimeFormat.format(lastUpdated)}{' '}
               <button onClick={() => send('REFRESH')}>Refresh</button>
             </small>
           </header>
@@ -46,7 +47,7 @@ const Subreddit = ({ name }) => {
 }
 
 Subreddit.propTypes = {
-  name: PropTypes.string
+  service: PropTypes.any
 }
 
 export default Subreddit

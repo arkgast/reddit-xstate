@@ -15,7 +15,10 @@ function App () {
   }
 
   return (
-    <main>
+    <main
+      data-machine={redditMachine.id}
+      data-state={current.toStrings().join(' ')}
+    >
       <header>
         <select onChange={handleSelect}>
           {subreddits.map(subreddit => (
@@ -23,7 +26,7 @@ function App () {
           ))}
         </select>
       </header>
-      {subreddit && <Subreddit name={subreddit} />}
+      {subreddit && <Subreddit service={subreddit} key={subreddit.id} />}
     </main>
   )
 }

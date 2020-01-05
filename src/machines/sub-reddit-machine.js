@@ -2,7 +2,6 @@ import { Machine, assign } from 'xstate'
 import axios from 'axios'
 
 const invokeFetchSubreddit = context => {
-  console.log({ context })
   const { subreddit } = context
   return axios
     .get(`https://www.reddit.com/r/${subreddit}.json`)
@@ -11,7 +10,7 @@ const invokeFetchSubreddit = context => {
 
 const createSubredditMachine = subreddit => {
   return Machine({
-    id: 'subreddit',
+    id: `subreddit-${subreddit}`,
     initial: 'loading',
     context: {
       subreddit,
